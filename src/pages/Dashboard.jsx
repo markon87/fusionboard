@@ -54,6 +54,14 @@ export default function Dashboard() {
     }));
   };
 
+  // Function to handle field reordering within an area
+  const handleFieldReorder = (area, oldIndex, newIndex) => {
+    const fields = [...pivotConfig[area]];
+    const [reorderedField] = fields.splice(oldIndex, 1);
+    fields.splice(newIndex, 0, reorderedField);
+    updatePivotConfig(area, fields);
+  };
+
   // Generate sample data for charts
   const chartData = generateMockData(1000);
   return (
@@ -126,6 +134,7 @@ export default function Dashboard() {
             availableFields={availableFields}
             pivotConfig={pivotConfig}
             onConfigUpdate={updatePivotConfig}
+            onFieldReorder={handleFieldReorder}
           />
         </div>
 

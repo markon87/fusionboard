@@ -1,9 +1,97 @@
 import React from 'react';
-import { FiColumns, FiHash, FiFilter } from 'react-icons/fi';
+import { FiColumns, FiHash, FiFilter, FiMove } from 'react-icons/fi';
 import { LuRows3 } from "react-icons/lu";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
+// Sortable Item Component
+function SortableItem({ id, field, area, removeField }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
 
-export default function FilterPanel({ availableFields, pivotConfig, onConfigUpdate }) {
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    background: '#374151',
+    padding: '6px 10px',
+    borderRadius: '6px',
+    marginBottom: '4px',
+    fontSize: '12px',
+    cursor: isDragging ? 'grabbing' : 'grab',
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div {...listeners} style={{ display: 'flex', alignItems: 'center', cursor: 'grab' }}>
+          <FiMove size={12} color="#9ca3af" />
+        </div>
+        <span>{field.caption || field.name}</span>
+      </div>
+      <button
+        onClick={() => removeField(area, field.name)}
+        style={{
+          background: 'none',
+          border: 'none',
+          color: '#ef4444',
+          cursor: 'pointer',
+          padding: '2px',
+          fontSize: '14px'
+        }}
+      >
+        ×
+      </button>
+    </div>
+  );
+}
+
+export default function FilterPanel({ availableFields, pivotConfig, onConfigUpdate, onFieldReorder }) {
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Handle drag end
+  const handleDragEnd = (event, area) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = pivotConfig[area].findIndex(field => field.name === active.id);
+      const newIndex = pivotConfig[area].findIndex(field => field.name === over.id);
+      
+      if (oldIndex !== -1 && newIndex !== -1) {
+        onFieldReorder(area, oldIndex, newIndex);
+      }
+    }
+  };
   
   // Get fields that are not currently used in any area
   const getAvailableFieldsForArea = (excludeArea = null) => {
@@ -52,38 +140,28 @@ export default function FilterPanel({ availableFields, pivotConfig, onConfigUpda
         <span>{title}</span>
       </div>
       
-      {/* Current Fields */}
-      <div style={{ marginBottom: '8px' }}>
-        {pivotConfig[area].map((field, index) => (
-          <div
-            key={`${field.name}-${index}`}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              background: '#374151',
-              padding: '6px 10px',
-              borderRadius: '6px',
-              marginBottom: '4px',
-              fontSize: '12px'
-            }}
+      {/* Current Fields with Drag & Drop */}
+      <div style={{ marginBottom: '8px', minHeight: '20px' }}>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={(event) => handleDragEnd(event, area)}
+        >
+          <SortableContext
+            items={pivotConfig[area].map(field => field.name)}
+            strategy={verticalListSortingStrategy}
           >
-            <span>{field.caption || field.name}</span>
-            <button
-              onClick={() => removeField(area, field.name)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#ef4444',
-                cursor: 'pointer',
-                padding: '2px',
-                fontSize: '14px'
-              }}
-            >
-              ×
-            </button>
-          </div>
-        ))}
+            {pivotConfig[area].map((field) => (
+              <SortableItem
+                key={field.name}
+                id={field.name}
+                field={field}
+                area={area}
+                removeField={removeField}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
       </div>
 
       {/* Add Field Button */}
