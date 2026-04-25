@@ -1,14 +1,53 @@
-import { PivotViewComponent } from '@syncfusion/ej2-react-pivotview';
-import logo from '../assets/fusionboard-logo-horizontal.png';
 
-const data = [
-  { Region: 'North', Product: 'Laptop', Sales: 1000 },
-  { Region: 'North', Product: 'Phone', Sales: 700 },
-  { Region: 'South', Product: 'Laptop', Sales: 900 },
-  { Region: 'South', Product: 'Phone', Sales: 400 }
-];
+import React, { useState } from 'react';
+import logo from '../assets/fusionboard-logo-horizontal.png';
+import PivotTable from '../components/PivotTable.jsx';
+import FilterPanel from '../components/FilterPanel.jsx';
 
 export default function Dashboard() {
+  // Available fields configuration
+  const availableFields = [
+    { name: 'region', caption: 'Region', type: 'dimension' },
+    { name: 'city', caption: 'City', type: 'dimension' },
+    { name: 'category', caption: 'Category', type: 'dimension' },
+    { name: 'product', caption: 'Product', type: 'dimension' },
+    { name: 'segment', caption: 'Segment', type: 'dimension' },
+    { name: 'year', caption: 'Year', type: 'time' },
+    { name: 'month', caption: 'Month', type: 'time' },
+    { name: 'sales', caption: 'Sales', type: 'measure' },
+    { name: 'households', caption: 'Households', type: 'measure' },
+    { name: 'population', caption: 'Population', type: 'measure' },
+    { name: 'avgIncome', caption: 'Average Income', type: 'measure' }
+  ];
+
+  // Pivot configuration state
+  const [pivotConfig, setPivotConfig] = useState({
+    rows: [
+      { name: 'region' },
+      { name: 'city' }
+    ],
+    columns: [
+      { name: 'category' },
+      { name: 'product' }
+    ],
+    values: [
+      { name: 'sales', caption: 'Total Sales' },
+      { name: 'households', caption: 'Households' }
+    ],
+    filters: [
+      { name: 'year' },
+      { name: 'month' },
+      { name: 'segment' }
+    ]
+  });
+
+  // Function to update pivot configuration
+  const updatePivotConfig = (area, fields) => {
+    setPivotConfig(prev => ({
+      ...prev,
+      [area]: fields
+    }));
+  };
   return (
     <div style={{ height: '100vh', fontFamily: 'Inter, sans-serif' }}>
 
@@ -44,12 +83,14 @@ export default function Dashboard() {
         
         {/* SIDEBAR */}
         <div style={{
-          width: '240px',
+          width: '280px',
           background: '#1f2937',
           color: '#fff',
-          padding: '20px'
+          padding: '20px',
+          overflowY: 'auto'
         }}>
-          <nav>
+          {/* Navigation Menu */}
+          {/* <nav style={{ marginBottom: '30px' }}>
             {[
               'Dashboard',
               'Audience',
@@ -70,7 +111,14 @@ export default function Dashboard() {
                 {item}
               </div>
             ))}
-          </nav>
+          </nav> */}
+
+          {/* FilterPanel Component */}
+          <FilterPanel 
+            availableFields={availableFields}
+            pivotConfig={pivotConfig}
+            onConfigUpdate={updatePivotConfig}
+          />
         </div>
 
         {/* MAIN CONTENT */}
@@ -91,15 +139,7 @@ export default function Dashboard() {
           }}>
             <h4 style={{ marginBottom: '10px' }}>Sales Crosstab</h4>
 
-            <PivotViewComponent
-              height={400}
-              dataSourceSettings={{
-                dataSource: data,
-                rows: [{ name: 'Region' }],
-                columns: [{ name: 'Product' }],
-                values: [{ name: 'Sales', caption: 'Total Sales' }]
-              }}
-            />
+            <PivotTable pivotConfig={pivotConfig} />
           </div>
         </div>
       </div>
