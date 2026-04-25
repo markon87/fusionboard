@@ -1,4 +1,7 @@
 import React from 'react';
+import { FiColumns, FiHash, FiFilter } from 'react-icons/fi';
+import { LuRows3 } from "react-icons/lu";
+
 
 export default function FilterPanel({ availableFields, pivotConfig, onConfigUpdate }) {
   
@@ -34,7 +37,7 @@ export default function FilterPanel({ availableFields, pivotConfig, onConfigUpda
   };
 
   // Component for each pivot area
-  const PivotArea = ({ title, area, icon }) => (
+  const PivotArea = ({ title, area, IconComponent }) => (
     <div style={{ marginBottom: '20px' }}>
       <div style={{ 
         display: 'flex', 
@@ -45,7 +48,7 @@ export default function FilterPanel({ availableFields, pivotConfig, onConfigUpda
         fontWeight: '600',
         color: '#e5e7eb'
       }}>
-        <span>{icon}</span>
+        <IconComponent size={16} style={{ color: '#10b981' }} />
         <span>{title}</span>
       </div>
       
@@ -123,10 +126,10 @@ export default function FilterPanel({ availableFields, pivotConfig, onConfigUpda
         Pivot Fields
       </h4>
       
-      <PivotArea title="Rows" area="rows" icon="📊" />
-      <PivotArea title="Columns" area="columns" icon="📈" />
-      <PivotArea title="Values" area="values" icon="💯" />
-      <PivotArea title="Filters" area="filters" icon="🔍" />
+      <PivotArea title="Rows" area="rows" IconComponent={LuRows3} />
+      <PivotArea title="Columns" area="columns" IconComponent={FiColumns} />
+      <PivotArea title="Values" area="values" IconComponent={FiHash} />
+      <PivotArea title="Filters" area="filters" IconComponent={FiFilter} />
     </div>
   );
 }

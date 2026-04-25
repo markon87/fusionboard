@@ -11,7 +11,7 @@ export default function PivotTable({ pivotConfig }) {
     <PivotViewComponent
         enableVirtualization={true}        
         dataSourceSettings={{
-            dataSource: generateMockData(5000),
+            dataSource: generateMockData(1000),
             rows: pivotConfig.rows,
             columns: pivotConfig.columns,
             values: pivotConfig.values,

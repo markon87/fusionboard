@@ -3,6 +3,11 @@ import React, { useState } from 'react';
 import logo from '../assets/fusionboard-logo-horizontal.png';
 import PivotTable from '../components/PivotTable.jsx';
 import FilterPanel from '../components/FilterPanel.jsx';
+import SalesTrendChart from '../components/SalesTrendChart.jsx';
+import RegionalChart from '../components/RegionalChart.jsx';
+import CategoryDonutChart from '../components/CategoryDonutChart.jsx';
+import IncomeVsSalesScatter from '../components/IncomeVsSalesScatter.jsx';
+import { generateMockData } from '../data/mockData.js';
 
 export default function Dashboard() {
   // Available fields configuration
@@ -48,6 +53,9 @@ export default function Dashboard() {
       [area]: fields
     }));
   };
+
+  // Generate sample data for charts
+  const chartData = generateMockData(1000);
   return (
     <div style={{ height: '100vh', fontFamily: 'Inter, sans-serif' }}>
 
@@ -130,16 +138,65 @@ export default function Dashboard() {
         }}>
           <h2>Dashboard</h2>
 
+          {/* Full Width Pivot Table */}
           <div style={{
             marginTop: '20px',
             background: '#fff',
             padding: '20px',
             borderRadius: '12px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+            marginBottom: '20px'
           }}>
-            <h4 style={{ marginBottom: '10px' }}>Sales Crosstab</h4>
-
+            <h4 style={{ marginBottom: '15px', color: '#374151', fontSize: '18px' }}>Sales Crosstab Analysis</h4>
             <PivotTable pivotConfig={pivotConfig} />
+          </div>
+
+          {/* Charts Grid - 2x2 Layout */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '20px'
+          }}>
+            
+            {/* Sales Trend Chart */}
+            <div style={{
+              background: '#fff',
+              padding: '20px',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            }}>
+              <SalesTrendChart data={chartData} />
+            </div>
+
+            {/* Regional Chart */}
+            <div style={{
+              background: '#fff',
+              padding: '20px',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            }}>
+              <RegionalChart data={chartData} />
+            </div>
+
+            {/* Category Donut Chart */}
+            <div style={{
+              background: '#fff',
+              padding: '20px',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            }}>
+              <CategoryDonutChart data={chartData} />
+            </div>
+
+            {/* Income vs Sales Scatter Chart */}
+            <div style={{
+              background: '#fff',
+              padding: '20px',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+            }}>
+              <IncomeVsSalesScatter data={chartData} />
+            </div>
           </div>
         </div>
       </div>
