@@ -4,14 +4,13 @@ import {
   Inject,
   VirtualScroll
 } from '@syncfusion/ej2-react-pivotview';
-import { generateMockData } from '../data/mockData.js';
 
-export default function PivotTable({ pivotConfig }) {
+export default function PivotTable({ pivotConfig, data }) {
   return (
     <PivotViewComponent
         enableVirtualization={true}        
         dataSourceSettings={{
-            dataSource: generateMockData(1000),
+            dataSource: data,
             rows: pivotConfig.rows,
             columns: pivotConfig.columns,
             values: pivotConfig.values,

@@ -25,6 +25,9 @@ export default function Dashboard() {
     { name: 'avgIncome', caption: 'Average Income', type: 'measure' }
   ];
 
+  // Data size control state
+  const [dataSize, setDataSize] = useState(1000);
+
   // Pivot configuration state
   const [pivotConfig, setPivotConfig] = useState({
     rows: [
@@ -62,8 +65,8 @@ export default function Dashboard() {
     updatePivotConfig(area, fields);
   };
 
-  // Generate sample data for charts
-  const chartData = generateMockData(1000);
+  // Generate sample data for charts with user-controlled size
+  const chartData = generateMockData(dataSize);
   return (
     <div style={{ height: '100vh', fontFamily: 'Inter, sans-serif' }}>
 
@@ -86,6 +89,24 @@ export default function Dashboard() {
 
         {/* RIGHT: ACTIONS */}
         <div style={{ display: 'flex', gap: '10px' }}>
+          {/* Data Size Selector */}
+          <select 
+            value={dataSize} 
+            onChange={(e) => setDataSize(Number(e.target.value))}
+            style={{
+              ...btnStyle,
+              minWidth: '120px',
+              background: '#f8fafc',
+              border: '1px solid #e2e8f0'
+            }}
+          >
+            <option value={100}>100 records</option>
+            <option value={500}>500 records</option>
+            <option value={1000}>1K records</option>
+            <option value={2500}>2.5K records</option>
+            <option value={5000}>5K records</option>
+            <option value={10000}>10K records</option>
+          </select>
           <button style={btnStyle}>May 1 - May 31</button>
           <button style={btnStyle}>Filters</button>
           <button style={{ ...btnStyle, background: '#6d28d9', color: '#fff' }}>
@@ -156,8 +177,11 @@ export default function Dashboard() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
             marginBottom: '20px'
           }}>
-            <h4 style={{ marginBottom: '15px', color: '#374151', fontSize: '18px' }}>Sales Crosstab Analysis</h4>
-            <PivotTable pivotConfig={pivotConfig} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+              <h4 style={{ margin: 0, color: '#374151', fontSize: '18px' }}>Sales Crosstab Analysis</h4>
+              <span style={{ fontSize: '14px', color: '#6b7280' }}>({dataSize.toLocaleString()} records)</span>
+            </div>
+            <PivotTable pivotConfig={pivotConfig} data={chartData} />
           </div>
 
           {/* Charts Grid - 2x2 Layout */}

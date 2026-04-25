@@ -200,6 +200,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by [markon87](https://github.com/markon87)**
+**Built by [markon87](https://github.com/markon87)**
 
 For questions or support, please open an issue on GitHub.
