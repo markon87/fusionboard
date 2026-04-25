@@ -31,21 +31,21 @@ export default function Dashboard() {
   // Pivot configuration state
   const [pivotConfig, setPivotConfig] = useState({
     rows: [
-      { name: 'region' },
-      { name: 'city' }
+      { name: 'region', caption: 'Region' },
+      { name: 'city', caption: 'City' }
     ],
     columns: [
-      { name: 'category' },
-      { name: 'product' }
+      { name: 'category', caption: 'Category' },
+      { name: 'product', caption: 'Product' }
     ],
     values: [
       { name: 'sales', caption: 'Total Sales' },
       { name: 'households', caption: 'Households' }
     ],
     filters: [
-      { name: 'year' },
-      { name: 'month' },
-      { name: 'segment' }
+      { name: 'year', caption: 'Year' },
+      { name: 'month', caption: 'Month' },
+      { name: 'segment', caption: 'Segment' }
     ]
   });
 
