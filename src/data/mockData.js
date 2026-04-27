@@ -139,24 +139,39 @@ export function generateMockData(count = 500) {
   const regions = ['Ontario', 'Quebec', 'Alberta', 'BC'];
   const cities = ['Toronto', 'Montreal', 'Calgary', 'Vancouver', 'Ottawa'];
   const segments = ['Urban Professionals', 'Families', 'Students', 'Retirees'];
-  const categories = ['Electronics', 'Home Goods', 'Fitness', 'Automotive'];
-  const products = ['Laptop', 'Phone', 'Tablet', 'Furniture', 'EV'];
+  
+  // Create logical category-product relationships
+  const categoryProducts = {
+    'Electronics': ['Laptop', 'Phone', 'Tablet', 'Smartwatch', 'Headphones'],
+    'Home Goods': ['Furniture', 'Appliances', 'Kitchenware', 'Bedding', 'Decor'],
+    'Fitness': ['Treadmill', 'Weights', 'Yoga Mat', 'Bike', 'Protein Powder'],
+    'Automotive': ['EV', 'Hybrid Car', 'SUV', 'Truck', 'Motorcycle']
+  };
+  
+  const categories = Object.keys(categoryProducts);
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May'];
 
-  return Array.from({ length: count }, (_, i) => ({
-    id: i + 1,
-    country: 'Canada',
-    region: regions[Math.floor(Math.random() * regions.length)],
-    city: cities[Math.floor(Math.random() * cities.length)],
-    segment: segments[Math.floor(Math.random() * segments.length)],
-    ageGroup: ['18-24', '25-34', '35-44', '45-54', '65+'][Math.floor(Math.random() * 5)],
-    category: categories[Math.floor(Math.random() * categories.length)],
-    product: products[Math.floor(Math.random() * products.length)],
-    year: 2024,
-    month: months[Math.floor(Math.random() * months.length)],
-    sales: Math.floor(Math.random() * 150000),
-    population: Math.floor(Math.random() * 3000000),
-    households: Math.floor(Math.random() * 1200000),
-    avgIncome: Math.floor(Math.random() * 100000)
-  }));
+  return Array.from({ length: count }, (_, i) => {
+    // First select category, then select appropriate product
+    const category = categories[Math.floor(Math.random() * categories.length)];
+    const products = categoryProducts[category];
+    const product = products[Math.floor(Math.random() * products.length)];
+    
+    return {
+      id: i + 1,
+      country: 'Canada',
+      region: regions[Math.floor(Math.random() * regions.length)],
+      city: cities[Math.floor(Math.random() * cities.length)],
+      segment: segments[Math.floor(Math.random() * segments.length)],
+      ageGroup: ['18-24', '25-34', '35-44', '45-54', '65+'][Math.floor(Math.random() * 5)],
+      category: category,
+      product: product,
+      year: 2024,
+      month: months[Math.floor(Math.random() * months.length)],
+      sales: Math.floor(Math.random() * 150000),
+      population: Math.floor(Math.random() * 3000000),
+      households: Math.floor(Math.random() * 1200000),
+      avgIncome: Math.floor(Math.random() * 100000)
+    };
+  });
 }
